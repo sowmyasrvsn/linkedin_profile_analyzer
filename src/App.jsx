@@ -605,100 +605,7 @@ export default function App() {
   };
 
   const exportDashboard = () => {
-    const d = dashboard;
-    const name = profile?.name || 'Profile';
-    const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    let md = `# Career Dashboard — ${name}\nGenerated: ${date}\n\n---\n\n`;
-
-    if (d?.career) {
-      md += `## Career\n\n`;
-      if (d.career.kpis?.length) {
-        md += `### Key Stats\n`;
-        d.career.kpis.forEach(k => { md += `- **${k.label}**: ${k.value} — ${k.sub}\n`; });
-        md += '\n';
-      }
-      if (d.career.insights) md += `### Insights\n${d.career.insights}\n\n`;
-      if (d.career.coaching?.length) {
-        md += `### Coaching\n`;
-        d.career.coaching.forEach((c, i) => { md += `${i + 1}. ${c}\n`; });
-        md += '\n';
-      }
-      if (d.career.feedback) md += `### Priority Action\n${d.career.feedback}\n\n`;
-    }
-
-    if (d?.skills) {
-      md += `---\n\n## Skills & Gaps\n\n`;
-      if (d.skills.strengths?.length) md += `**Strengths:** ${d.skills.strengths.join(', ')}\n\n`;
-      if (d.skills.gaps?.length) md += `**Gaps to Close:** ${d.skills.gaps.join(', ')}\n\n`;
-      if (d.skills.insights) md += `### Insights\n${d.skills.insights}\n\n`;
-      if (d.skills.coaching?.length) {
-        md += `### Coaching\n`;
-        d.skills.coaching.forEach((c, i) => { md += `${i + 1}. ${c}\n`; });
-        md += '\n';
-      }
-      if (d.skills.feedback) md += `### Direct Feedback\n${d.skills.feedback}\n\n`;
-    }
-
-    if (d?.recommendations) {
-      md += `---\n\n## Recommendations\n\n`;
-      if (d.recommendations.themes?.length) {
-        md += `### Themes\n`;
-        d.recommendations.themes.forEach(t => {
-          md += `**${t.theme}**: ${t.description}`;
-          if (t.quote) md += ` *"${t.quote}"*`;
-          md += '\n';
-        });
-        md += '\n';
-      }
-      if (d.recommendations.insights) md += `### Insights\n${d.recommendations.insights}\n\n`;
-      if (d.recommendations.coaching?.length) {
-        md += `### Coaching\n`;
-        d.recommendations.coaching.forEach((c, i) => { md += `${i + 1}. ${c}\n`; });
-        md += '\n';
-      }
-      if (d.recommendations.feedback) md += `### Direct Feedback\n${d.recommendations.feedback}\n\n`;
-    }
-
-    if (d?.aiJobs) {
-      md += `---\n\n## AI Jobs\n\nSeniority Level: ${d.aiJobs.seniority}\n\n`;
-      if (d.aiJobs.roles?.length) {
-        md += `### Matched Roles\n`;
-        d.aiJobs.roles.forEach(r => {
-          md += `\n#### ${r.title} — ${r.fit_score}% fit\n${r.why}\n`;
-          if (r.skills_match?.length) md += `- **Matches:** ${r.skills_match.join(', ')}\n`;
-          if (r.skills_gap?.length) md += `- **Gaps:** ${r.skills_gap.join(', ')}\n`;
-        });
-        md += '\n';
-      }
-      if (d.aiJobs.insights) md += `### Insights\n${d.aiJobs.insights}\n\n`;
-      if (d.aiJobs.coaching?.length) {
-        md += `### Coaching\n`;
-        d.aiJobs.coaching.forEach((c, i) => { md += `${i + 1}. ${c}\n`; });
-        md += '\n';
-      }
-      if (d.aiJobs.feedback) md += `### Direct Feedback\n${d.aiJobs.feedback}\n\n`;
-    }
-
-    if (d?.recruiterTips) {
-      md += `---\n\n## Recruiter Tips\n\n`;
-      const sorted = [...(d.recruiterTips.tips || [])].sort(
-        (a, b) => ['high', 'medium', 'low'].indexOf(a.priority) - ['high', 'medium', 'low'].indexOf(b.priority)
-      );
-      sorted.forEach(tip => {
-        md += `### ${tip.category} [${tip.priority.toUpperCase()}]\n**${tip.tip}**\n${tip.detail}\n\n`;
-      });
-      if (d.recruiterTips.insights) md += `### Insights\n${d.recruiterTips.insights}\n\n`;
-    }
-
-    const blob = new Blob([md], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `career-dashboard-${name.replace(/\s+/g, '-').toLowerCase()}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    window.print();
   };
 
   const clearSession = () => {
@@ -996,6 +903,47 @@ Aug 2025 - Present · 9 mos
           {dashTab === 'recruiter' && <RecruiterTab data={dashboard?.recruiterTips} />}
         </div>
       )}
+
+      {/* Always-rendered print layout — off-screen on screen, shown on print */}
+      <div className="print-layout" aria-hidden="true">
+        <div className="print-header-block">
+          <div className="print-logo-row">
+            <Logo id="print-logo" />
+            <div>
+              <div className="print-app-name">LinkedIn Profile Analyzer</div>
+              <div className="print-app-sub">Career Intelligence · Powered by Claude AI</div>
+            </div>
+          </div>
+          {profile?.name && <div className="print-person-name">{profile.name}</div>}
+          <div className="print-meta-row">
+            {profile?.stats?.totalRoles > 0 && <span>{profile.stats.totalRoles} roles</span>}
+            {profile?.stats?.uniqueCompanies > 0 && <span>· {profile.stats.uniqueCompanies} companies</span>}
+            {profile?.stats?.totalYearsExperience > 0 && <span>· {profile.stats.totalYearsExperience}yr experience</span>}
+            <span>· Generated {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </div>
+        </div>
+
+        <div className="print-section">
+          <div className="print-section-title">📊 Career</div>
+          <CareerTab data={dashboard?.career} />
+        </div>
+        <div className="print-section">
+          <div className="print-section-title">🎯 Skills &amp; Gaps</div>
+          <SkillsTab data={dashboard?.skills} />
+        </div>
+        <div className="print-section">
+          <div className="print-section-title">💬 Recommendations</div>
+          <RecsTab data={dashboard?.recommendations} />
+        </div>
+        <div className="print-section">
+          <div className="print-section-title">🤖 AI Jobs</div>
+          <AIJobsTab data={dashboard?.aiJobs} />
+        </div>
+        <div className="print-section">
+          <div className="print-section-title">🔍 Recruiter Tips</div>
+          <RecruiterTab data={dashboard?.recruiterTips} />
+        </div>
+      </div>
 
       {showKeyModal && <KeyModal />}
     </div>
