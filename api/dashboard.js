@@ -11,6 +11,9 @@ export default async function handler(req, res) {
 
 Analyze this LinkedIn profile and return a complete career dashboard as valid JSON only — no markdown fences, no explanation, just the raw JSON object.
 
+CRITICAL RULE — AI JOBS SENIORITY MATCHING:
+Determine the person's current level from their most recent job title (e.g. Director, Senior Director, VP, Manager). Every suggested AI job title in the "roles" array MUST match that exact level. Never suggest roles one level above what they currently hold. A Director gets Director-level AI roles. A Manager gets Manager-level AI roles. A VP gets VP-level AI roles. Violating this rule makes the output useless.
+
 Profile:
 ${JSON.stringify(profileContext, null, 2)}
 
@@ -48,15 +51,33 @@ Return ONLY this JSON structure:
     "feedback": "Direct take on the recommendation profile."
   },
   "aiJobs": {
-    "seniority": "Entry/Mid/Senior/Staff/Executive",
+    "seniority": "Infer EXACTLY from their most recent title and years of experience — use one of: Manager / Senior Manager / Director / Senior Director / VP / SVP / C-Suite. Do NOT promote them. A Director stays a Director.",
     "roles": [
-      {"title": "AI Role Title", "fit_score": 85, "why": "1-2 sentences tied to actual background", "skills_match": ["s1", "s2", "s3"], "skills_gap": ["g1", "g2"]},
-      {"title": "AI Role Title 2", "fit_score": 78, "why": "...", "skills_match": ["s1", "s2"], "skills_gap": ["g1", "g2"]},
-      {"title": "AI Role Title 3", "fit_score": 70, "why": "...", "skills_match": ["s1", "s2"], "skills_gap": ["g1", "g2"]}
+      {
+        "title": "RULES FOR THIS FIELD: (1) The job title MUST match their current seniority level exactly — if they are a Director, every role title must include 'Director' (e.g. 'Director of AI Strategy', 'Director, Data & AI'). If VP, titles must include 'VP'. Never suggest a level above what they currently hold. (2) The role must be in the AI/ML/data space. (3) It must be a real job title recruiters actually post.",
+        "fit_score": 85,
+        "why": "1-2 sentences that cite their specific background — name a real role or skill from their profile",
+        "skills_match": ["skill directly from their profile 1", "skill 2", "skill 3"],
+        "skills_gap": ["specific gap vs this role 1", "gap 2"]
+      },
+      {
+        "title": "Second role — same level as their current title, different AI domain (e.g. if first was strategy, this could be product or analytics)",
+        "fit_score": 78,
+        "why": "Specific to their profile",
+        "skills_match": ["s1", "s2"],
+        "skills_gap": ["g1", "g2"]
+      },
+      {
+        "title": "Third role — same level, adjacent function (e.g. consulting, platform, or operations)",
+        "fit_score": 70,
+        "why": "Specific to their profile",
+        "skills_match": ["s1", "s2"],
+        "skills_gap": ["g1", "g2"]
+      }
     ],
-    "insights": "Overview of AI-era positioning based on actual background.",
-    "coaching": ["specific AI transition step 1", "step 2", "step 3"],
-    "feedback": "Direct take on AI readiness and biggest opportunity."
+    "insights": "2-3 sentences on their AI-era positioning. Reference their actual title, years, and top skills. Explain why these specific roles are the right fit for their level — not one level up.",
+    "coaching": ["specific AI transition step tied to their background", "step 2", "step 3"],
+    "feedback": "Direct take on their AI readiness at their current level. What makes them competitive right now and what is the one gap holding them back."
   },
   "recruiterTips": {
     "tips": [
