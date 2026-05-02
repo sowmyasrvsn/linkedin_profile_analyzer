@@ -89,7 +89,9 @@ Return ONLY this JSON structure:
     if (!response.ok) {
       const errText = await response.text();
       if (response.status === 401) return res.status(401).json({ error: 'INVALID_API_KEY' });
-      return res.status(500).json({ error: 'Claude API error', details: errText });
+      let detail = errText;
+      try { detail = JSON.parse(errText)?.error?.message || errText; } catch {}
+      return res.status(500).json({ error: `Claude API error: ${detail}` });
     }
 
     const data = await response.json();
