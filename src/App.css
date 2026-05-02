@@ -65,6 +65,8 @@ body::before {
 }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 .btn-ghost.danger:hover { border-color: var(--red); color: var(--red); }
+.btn-export { border-color: var(--accent); color: var(--accent); }
+.btn-export:hover { background: var(--accent); color: #fff; }
 
 .btn-back {
   font-size: 12px; padding: 5px 12px; border-radius: 8px; cursor: pointer;
