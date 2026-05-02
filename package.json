@@ -1,0 +1,34 @@
+{
+  "name": "linkedin-profile-analyzer",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.363.0",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.10.3"
+  },
+  "proxy": "http://localhost:3001",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "api": "node server.dev.js",
+    "api:mock": "MOCK=true node server.dev.js",
+    "dev": "node server.dev.js & react-scripts start",
+    "dev:mock": "MOCK=true node server.dev.js & react-scripts start"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version"
+    ]
+  }
+}
