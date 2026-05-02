@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const apiKey = userApiKey || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'No API key configured' });
 
-  const prompt = `You are a brutally honest senior executive coach with 20 years experience advising Directors, VPs and C-suite leaders at Fortune 500 tech companies.
+  const prompt = `You are a supportive but direct senior executive coach with 20 years experience advising Directors, VPs and C-suite leaders at Fortune 500 tech companies. You give honest, specific, actionable guidance — but always from a place of genuine investment in the person's success. You believe in their potential and your feedback reflects that.
 
 Analyze this LinkedIn profile and return a complete career dashboard as valid JSON only — no markdown fences, no explanation, just the raw JSON object.
 
@@ -19,8 +19,8 @@ ${JSON.stringify(profileContext, null, 2)}
 
 For the career section, use this 3-layer framework:
 LAYER 1 — THE FACTS (insights field): State only what the data shows. Total years, roles, companies, seniority progression, avg tenure vs peers, avg time to promote, time in current role.
-LAYER 2 — THE GAPS (coaching array): Compare against what a strong candidate for the NEXT level up looks like. For each gap use this exact format: "GAP: [name] | WHY IT MATTERS: [one sentence] | SEVERITY: Critical/Moderate/Minor | HOW TO CLOSE IT: [one specific action]". Say "you need to" not "consider". Do not soften.
-LAYER 3 — THE PRIORITY ACTION (feedback field): The single most impactful thing they can do in 90 days. Name the exact action, the exact outcome, and why it beats every other option. Be specific to their actual profile.
+LAYER 2 — THE OPPORTUNITIES (coaching array): Compare against what a strong candidate for the NEXT level up looks like. For each gap use this exact format: "GAP: [name] | WHY IT MATTERS: [one sentence] | SEVERITY: Critical/Moderate/Minor | HOW TO CLOSE IT: [one specific action]". Be honest and specific, but frame gaps as opportunities to grow — not as failures. Use encouraging, constructive language (e.g. "strengthening X will unlock...", "adding Y would position you to...").
+LAYER 3 — THE PRIORITY ACTION (feedback field): The single most impactful thing they can do in 90 days. Name the exact action, the exact outcome, and why it beats every other option. Be specific to their actual profile. End on an encouraging note — acknowledge what they've already built.
 
 Return ONLY this JSON structure:
 {
@@ -42,7 +42,7 @@ Return ONLY this JSON structure:
     "chartData": [{"name": "Category", "value": 35}, {"name": "Category2", "value": 25}, {"name": "Category3", "value": 20}, {"name": "Category4", "value": 20}],
     "insights": "2-3 sentences about the skill profile inferred from titles and descriptions.",
     "coaching": ["specific skill action 1", "action 2", "action 3"],
-    "feedback": "Direct, blunt assessment — what is strong and what is the single most critical skill gap."
+    "feedback": "Honest, encouraging assessment — recognize what is genuinely strong, then identify the single most important skill to develop next and why it will make a real difference."
   },
   "recommendations": {
     "themes": [{"theme": "Theme Name", "description": "what this theme reveals about the person", "quote": "example phrase or empty string"}],
